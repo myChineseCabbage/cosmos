@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zxb.cosmos.mapper.UserMapper">
+    <resultMap id="BaseUserResultMap" type="User">
+        <id property="uid" column="UID" javaType="java.lang.String" jdbcType="VARCHAR" />
+        <result property="userName" column="USER_NAME" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--列集-->
+    <sql id="Base_clumn_list">
+        UID,USER_NAME
+    </sql>
+    <!--添加用户-->
+    <insert id="insUser" parameterType="User" >
+        insert  into tb_user(UID,USER_NAME) values  (#{uid},#{userName})
+    </insert>
+    <!--修改用户信息-->
+    <update id="updateUser" parameterType="User">
+        update tb_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userName != null">
+                USER_NAME = #{userName}
+            </if>
+        </trim>
+        where UID = #{uid}
+    </update>
+    <!--删除用户-->
+    <delete id="deleteUser" parameterType="User">
+        delete  FROM  tb_user where UID = #{uid}
+    </delete>
+
+    <!--查询用户语句-->
+    <select id="selectUsers" resultMap="BaseUserResultMap" parameterType="User">
+        select
+          <include refid="Base_clumn_list"/>
+          from
+          tb_user
+          <where>
+              <if test="uid!=null">
+                  and UID = #{uid}
+              </if>
+              <if test="userName!=null">
+                  and USER_NAME = #{userName}
+              </if>
+          </where>
+    </select>
+    <!--查询总条数-->
+    <select id="getCountNum" resultType="Integer" parameterType="User">
+        select
+          count(*)
+          from
+          tb_user
+        <where>
+            <if test="uid!=null">
+                and UID = #{uid}
+            </if>
+            <if test="userName!=null">
+                and USER_NAME = #{userName}
+            </if>
+        </where>
+    </select>
+
+</mapper>
