@@ -15,5 +15,13 @@ public interface UserService {
     List<User> selectUsers(JSONObject jsonObject);
     Integer getCountNum(User user);
 
+    /**
+     * 根据用户信息 如uid username 查询用户的详细信息
+     * @param user
+     * @return
+     */
+    User getUserInfo(User user);
 
+
+    boolean registerData(String userName,String password);
 }

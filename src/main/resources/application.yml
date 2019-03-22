@@ -6,6 +6,9 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/unifited_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: 12345678
+    thymeleaf:
+      cache: false
+      mode: LEGACYHTML5
 mybatis:
   mapper-locations: classpath*:mapping/*.xml
   type-aliases-package: com.zxb.cosmos.pojo

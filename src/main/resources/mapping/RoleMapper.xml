@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zxb.cosmos.mapper.RoleMapper">
+   <resultMap id="BaseRoleResultMap" type="Role">
+       <id column="ROLE_ID" property="roleId" javaType="java.lang.String" jdbcType="VARCHAR"/>
+       <result column="ROLE_NAME" property="roleName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+       <result column="DESCRIPTION" property="description" javaType="java.lang.String" jdbcType="VARCHAR"/>
+       <result column="AVAILABLE" property="available" javaType="java.lang.String" jdbcType="VARCHAR"/>
+   </resultMap>
+    <select id="getRolesByUserID" parameterType="User" resultMap="BaseRoleResultMap">
+        select
+           tb_user.UID,
+           tb_user.USER_NAME,
+           tb_user.USER_NICK,
+           tb_user.SALT,
+           tb_user.CREATE_TIME,
+           tb_user.PASSWORD,
+           tb_user.STATE,
+           tb_role.ROLE_ID,
+           tb_role.ROLE_NAME,
+           tb_role.DESCRIPTION,
+           tb_role.AVAILABLE
+        from
+            tb_user
+            right join  tb_user_role on  tb_user.UID = tb_user_role.UID
+            left join  tb_role on  tb_user_role.ROLE_ID = tb_role.ROLE_ID
+        <where>
+            <if test="uid!=null">
+                and UID = #{uid}
+            </if>
+            <if test="userName!=null">
+                and USER_NAME = #{userName}
+            </if>
+        </where>
+    </select>
+
+</mapper>

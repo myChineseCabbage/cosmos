@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zxb.cosmos.mapper.PermissionMapper">
+    <resultMap id="BasePermissionResultMap" type="Permission">
+        <id column="PID" property="pid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="PERMISSION_NAME" property="permissionName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="URL" property="url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="PERMISSION_INFO" property="permissionInfo" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getPermisByRoleID" resultMap="BasePermissionResultMap" parameterType="Role">
+      select
+          tb_role.ROLE_ID,
+           tb_role.ROLE_NAME,
+           tb_role.DESCRIPTION,
+           tb_role.AVAILABLE,
+           tb_permission.PID,
+           tb_permission.PERMISSION_NAME,
+           tb_permission.URL,
+           tb_permission.PERMISSION_INFO
+      from
+          (tb_permission,tb_role)
+          right  join  tb_role_permission  on tb_permission.PID = tb_role_permission.PID
+          and tb_role_permission.ROLE_ID = tb_role.ROLE_ID
+          where tb_role.ROLE_ID = #{roleId}
+    </select>
+</mapper>

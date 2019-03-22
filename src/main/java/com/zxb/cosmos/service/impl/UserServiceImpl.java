@@ -6,6 +6,10 @@ import com.zxb.cosmos.mapper.UserMapper;
 import com.zxb.cosmos.pojo.User;
 import com.zxb.cosmos.service.UserService;
 import com.zxb.cosmos.utils.PageBean;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,7 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private UserMapper userMapper;
@@ -72,5 +77,58 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer getCountNum(User user) {
         return null;
+    }
+
+    /**
+     * 根据用户的信息查询用户的详细信息
+     * @param user
+     * @return
+     */
+    @Override
+    public User getUserInfo(User user) {
+
+        return userMapper.getUserInfoByUid(user);
+    }
+
+    /**
+     * 注册
+     * @param userName
+     * @param password
+     * @return
+     */
+    @Override
+    public boolean registerData(String userName, String password) {
+        //生成uuid
+        String uid = "123123";
+        //将用户名作为盐值
+        ByteSource salt  = ByteSource.Util.bytes(userName);
+        /**
+         * md5加密
+         * 使用SimpleHash类对原始密码进行加密
+         * 第一个参数代表使用MD5方式加密
+         * 第二个参数为原始密码
+         * 第三个参数为盐值 ，即用户名
+         * 第四个参数为加密次数
+         * 最后toHex() 方法将加密后的密码转换成String
+         *
+         */
+        String newPasswordmd5 = new SimpleHash("MD5",password,salt,2).toHex();
+        User user = new User();
+        user.setUid(uid);
+        user.setUserName(userName);
+        user.setPassword(newPasswordmd5);
+        user.setSalt(salt.toHex());
+        user.setUserNick(userName+"nick");
+        user.setCreateTime("2019.3.22");
+        user.setState("1");
+
+        List<User> userList = userMapper.selectUsers(user);
+        logger.info("userList"+userList);
+        if(userList.size()<1){
+            logger.info("新增用户");
+            userMapper.insUser(user);
+            return  true;
+        }
+        return false;
     }
 }

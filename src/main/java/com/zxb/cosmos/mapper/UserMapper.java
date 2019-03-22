@@ -13,4 +13,6 @@ public interface UserMapper {
     List<User> selectUsers(User user);
     Integer getCountNum(User user);
 
+    User getUserInfoByUid(User user);
+
 }
